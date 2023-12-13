@@ -1,69 +1,61 @@
-import time
-
-from selenium.webdriver.common.by import By
+import locator
+import helpers
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-def test_open_lk_page(authorized):
-    driver = authorized
+class TestLK:
+    def test_open_lk_page(self, driver_option):
+        driver_option = helpers.authorized(driver_option)
 
-    driver.find_element(By.XPATH, ".//a[@href = '/account']").click()
+        driver_option.find_element(*locator.Locator.lk_in_header).click()
 
-    WebDriverWait(driver, 3).until(
-        expected_conditions.visibility_of_element_located((By.XPATH, ".//a[@href = '/account/profile']")))
+        WebDriverWait(driver_option, 3).until(
+            expected_conditions.visibility_of_element_located(locator.Locator.link_for_setting_profile))
 
-    assert driver.current_url == "https://stellarburgers.nomoreparties.site/account/profile"
+        assert driver_option.current_url == "https://stellarburgers.nomoreparties.site/account/profile"
 
-    driver.quit()
+    def test_switch_lk_to_construct_with_click_to_logo(self, driver_option):
+        driver_option = helpers.authorized(driver_option)
 
+        driver_option.find_element(*locator.Locator.lk_in_header).click()
 
-def test_switch_lk_to_construct_with_click_to_logo(authorized):
-    driver = authorized
+        WebDriverWait(driver_option, 3).until(
+            expected_conditions.visibility_of_element_located(locator.Locator.link_for_setting_profile))
 
-    driver.find_element(By.XPATH, ".//a[@href = '/account']").click()
+        driver_option.find_element(*locator.Locator.logo_in_header).click()
 
-    WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located(
-        (By.XPATH, ".//a[@href = '/account/profile']")))
+        WebDriverWait(driver_option, 5).until(expected_conditions.visibility_of_element_located(
+            locator.Locator.constructr_block))
 
-    driver.find_element(By.CLASS_NAME, "AppHeader_header__logo__2D0X2").click()
+        assert driver_option.current_url == "https://stellarburgers.nomoreparties.site/"
 
-    WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located(
-        (By.CLASS_NAME, "BurgerIngredients_ingredients__1N8v2")))
+    def test_switch_lk_to_construct_with_click_to_constructor_button(self, driver_option):
+        driver_option = helpers.authorized(driver_option)
 
-    assert driver.current_url == "https://stellarburgers.nomoreparties.site/"
+        driver_option.find_element(*locator.Locator.lk_in_header).click()
 
-    driver.quit()
+        WebDriverWait(driver_option, 3).until(
+            expected_conditions.visibility_of_element_located(locator.Locator.link_for_setting_profile))
 
+        driver_option.find_element(*locator.Locator.constructor_in_header).click()
 
-def test_switch_lk_to_construct_with_click_to_constructor_button(authorized):
-    driver = authorized
+        WebDriverWait(driver_option, 5).until(expected_conditions.visibility_of_element_located(
+            locator.Locator.constructr_block))
 
-    driver.find_element(By.XPATH, ".//a[@href = '/account']").click()
+        assert driver_option.current_url == "https://stellarburgers.nomoreparties.site/"
 
-    WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located(
-        (By.XPATH, ".//a[@href = '/account/profile']")))
+    def test_exit_from_lk(self, driver_option):
+        driver_option = helpers.authorized(driver_option)
 
-    driver.find_element(By.CLASS_NAME, "AppHeader_header__linkText__3q_va").click()
+        driver_option.find_element(*locator.Locator.lk_in_header).click()
 
-    WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located(
-        (By.CLASS_NAME, "BurgerIngredients_ingredients__1N8v2")))
+        WebDriverWait(driver_option, 3).until(
+            expected_conditions.visibility_of_element_located(locator.Locator.link_for_setting_profile))
 
-    assert driver.current_url == "https://stellarburgers.nomoreparties.site/"
+        driver_option.find_element(*locator.Locator.logout_button).click()
 
-    driver.quit()
+        WebDriverWait(driver_option, 3).until(expected_conditions.visibility_of_element_located(
+            locator.Locator.button_login))
 
-
-def test_exit_from_lk(authorized):
-    driver = authorized
-
-    driver.find_element(By.XPATH, ".//a[@href = '/account']").click()
-
-    driver.find_element(By.XPATH, ".//li[@class = 'Account_listItem__35dAP'][3]/button").click()
-
-    WebDriverWait(driver, 3).until(
-        expected_conditions.element_to_be_clickable((By.XPATH, ".//li[@class = 'Account_listItem__35dAP'][3]/button")))
-
-    assert driver.current_url == "https://stellarburgers.nomoreparties.site/login"
-
-    driver.quit()
+        assert driver_option.current_url == "https://stellarburgers.nomoreparties.site/login"

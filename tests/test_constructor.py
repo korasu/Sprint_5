@@ -1,55 +1,33 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+import locator
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
-def test_constructor_stay_at_rolls():
-    driver = webdriver.Chrome()
 
-    driver.get("https://stellarburgers.nomoreparties.site")
+class TestConstructor:
+    def test_constructor_stay_at_rolls(self, driver_option):
+        driver_option.get("https://stellarburgers.nomoreparties.site")
 
-    driver.find_element(By.XPATH, ".//span[text() = 'Соусы']").click()
-    driver.find_element(By.XPATH, ".//span[text() = 'Булки']").click()
+        driver_option.find_element(*locator.Locator.button_sauces).click()
+        driver_option.find_element(*locator.Locator.button_buns).click()
 
-    WebDriverWait(driver, 3).until(expected_conditions.element_to_be_clickable((By.XPATH, ".//span[text() = "
-                                                                                          "'Булки']")))
+        WebDriverWait(driver_option, 3).until(expected_conditions.element_to_be_clickable(locator.Locator.button_buns))
 
-    element = driver.find_element(By.XPATH, ".//div[@style = 'display: flex;']/div[1]").get_attribute('class')
+        assert driver_option.find_element(*locator.Locator.constructor_page_buns_proof_element).text == 'Краторная булка N-200i'
 
-    assert 'current' in element
+    def test_constructor_stay_at_sauces(self, driver_option):
+        driver_option.get("https://stellarburgers.nomoreparties.site")
 
-    driver.quit()
+        driver_option.find_element(*locator.Locator.button_sauces).click()
 
+        WebDriverWait(driver_option, 3).until(expected_conditions.element_to_be_clickable(locator.Locator.button_sauces))
 
-def test_constructor_stay_at_sauces():
-    driver = webdriver.Chrome()
+        assert driver_option.find_element(*locator.Locator.constructor_page_sauces_proof_element).text == 'Соус с шипами Антарианского плоскоходца'
 
-    driver.get("https://stellarburgers.nomoreparties.site")
+    def test_constructor_stay_at_fillings(self, driver_option):
+        driver_option.get("https://stellarburgers.nomoreparties.site")
 
-    driver.find_element(By.XPATH, ".//span[text() = 'Соусы']").click()
+        driver_option.find_element(*locator.Locator.button_fillers).click()
 
-    WebDriverWait(driver, 3).until(expected_conditions.element_to_be_clickable((By.XPATH, ".//span[text() = "
-                                                                                          "'Соусы']")))
+        WebDriverWait(driver_option, 3).until(expected_conditions.element_to_be_clickable(locator.Locator.button_fillers))
 
-    element = driver.find_element(By.XPATH, ".//div[@style = 'display: flex;']/div[2]").get_attribute('class')
-
-    assert 'current' in element
-
-    driver.quit()
-
-
-def test_constructor_stay_at_fillings():
-    driver = webdriver.Chrome()
-
-    driver.get("https://stellarburgers.nomoreparties.site")
-
-    driver.find_element(By.XPATH, ".//span[text() = 'Начинки']").click()
-
-    WebDriverWait(driver, 3).until(expected_conditions.element_to_be_clickable((By.XPATH, ".//span[text() = "
-                                                                                          "'Начинки']")))
-
-    element = driver.find_element(By.XPATH, ".//div[@style = 'display: flex;']/div[3]").get_attribute('class')
-
-    assert 'current' in element
-
-    driver.quit()
+        assert driver_option.find_element(*locator.Locator.constructor_page_fillers_proof_element).text == 'Говяжий метеорит (отбивная)'

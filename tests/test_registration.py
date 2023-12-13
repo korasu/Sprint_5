@@ -1,65 +1,54 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+import locator
+import helpers
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-class Locator:
-    def __init__(self):
-        self.account_entry = ".button_button__33qZ0"  # локатор для кнопки "Войти в аккаунт"
-        self.register = ".//a[@href = '/register']"  # локатор для кнопки перехода к форме регистрации
-        self.form_login = ".Auth_login__3hAey"  # локатор страницы логина
-        self.name = "(//input)[1]"  # локатор ввода имени пользователя
-        self.login = "(//input)[2]"  # локатор ввода email пользователя
-        self.password = "(//input)[3]"  # локатор ввода пароля пользователя
-        self.button_registration = ".//button[text() = 'Зарегистрироваться']"  # локатор кнопки "Зарегистрироваться"
-        self.error = ".//p[@class = 'input__error text_type_main-default']"  # локатор текста ошибки при неверном пароля
+class TestRegistrationPage:
+    def test_success_registration(self, driver_option):
+        name = helpers.create_name()
+        email = helpers.create_login()
+        password = helpers.create_password()
+
+        driver_option.get("https://stellarburgers.nomoreparties.site")
+        driver_option.find_element(*locator.Locator.account_entry).click()
+        driver_option.find_element(*locator.Locator.register).click()
+
+        WebDriverWait(driver_option, 3).until(
+            expected_conditions.visibility_of_element_located(locator.Locator.form_login))
+
+        driver_option.find_element(*locator.Locator.name).send_keys(name)
+        driver_option.find_element(*locator.Locator.login).send_keys(email)
+        driver_option.find_element(*locator.Locator.password).send_keys(password)
+
+        driver_option.find_element(*locator.Locator.button_registration).click()
+
+        WebDriverWait(driver_option, 10).until(
+            expected_conditions.visibility_of_element_located(locator.Locator.button_login))
+
+        assert driver_option.current_url == 'https://stellarburgers.nomoreparties.site/login'
 
 
-def test_success_registration(create_login, create_name, create_password):
-    driver = webdriver.Chrome()
-    locator = Locator()
+    def test_failed_registration_incorrect_password(self, driver_option):
+        name = helpers.create_name()
+        email = helpers.create_login()
+        password = helpers.create_incorrect_password()
 
-    driver.get("https://stellarburgers.nomoreparties.site")
-    driver.find_element(By.CSS_SELECTOR, locator.account_entry).click()
-    driver.find_element(By.XPATH, locator.register).click()
+        driver_option.get("https://stellarburgers.nomoreparties.site")
+        driver_option.find_element(*locator.Locator.account_entry).click()
+        driver_option.find_element(*locator.Locator.register).click()
 
-    WebDriverWait(driver, 3).until(
-        expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, locator.form_login)))
+        WebDriverWait(driver_option, 3).until(
+            expected_conditions.visibility_of_element_located(locator.Locator.form_login))
 
-    driver.find_element(By.XPATH, locator.name).send_keys(create_name)
-    driver.find_element(By.XPATH, locator.login).send_keys(create_login)
-    driver.find_element(By.XPATH, locator.password).send_keys(create_password)
+        driver_option.find_element(*locator.Locator.name).send_keys(name)
+        driver_option.find_element(*locator.Locator.login).send_keys(email)
+        driver_option.find_element(*locator.Locator.password).send_keys(password)
 
-    driver.find_element(By.XPATH, locator.button_registration).click()
+        driver_option.find_element(*locator.Locator.button_registration).click()
+        WebDriverWait(driver_option, 3).until(
+            expected_conditions.visibility_of_element_located(locator.Locator.error))
 
-    WebDriverWait(driver, 3).until(
-        expected_conditions.element_to_be_clickable((By.XPATH, locator.button_registration)))
+        assert driver_option.find_element(*locator.Locator.error).text == 'Некорректный пароль'
 
-    assert driver.current_url == 'https://stellarburgers.nomoreparties.site/login'
-
-    driver.quit()
-
-
-def test_failed_registration_incorrect_password(create_login, create_name, create_incorrect_password):
-    driver = webdriver.Chrome()
-    locator = Locator()
-
-    driver.get("https://stellarburgers.nomoreparties.site")
-    driver.find_element(By.CSS_SELECTOR, locator.account_entry).click()
-    driver.find_element(By.XPATH, locator.register).click()
-
-    WebDriverWait(driver, 3).until(
-        expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, locator.form_login)))
-
-    driver.find_element(By.XPATH, locator.name).send_keys(create_name)
-    driver.find_element(By.XPATH, locator.login).send_keys(create_login)
-    driver.find_element(By.XPATH, locator.password).send_keys(create_incorrect_password)
-
-    driver.find_element(By.XPATH, locator.button_registration).click()
-    WebDriverWait(driver, 3).until(
-        expected_conditions.visibility_of_element_located((By.XPATH, locator.error)))
-
-    assert driver.find_element(By.XPATH, locator.error).text == 'Некорректный пароль'
-
-    driver.quit()
+        driver_option.quit()
