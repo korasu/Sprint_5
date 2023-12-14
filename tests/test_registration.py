@@ -50,5 +50,3 @@ class TestRegistrationPage:
             expected_conditions.visibility_of_element_located(locator.Locator.error))
 
         assert driver_option.find_element(*locator.Locator.error).text == 'Некорректный пароль'
-
-        driver_option.quit()

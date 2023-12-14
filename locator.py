@@ -31,15 +31,10 @@ class Locator:
     button_buns = (By.XPATH, ".//span[text() = 'Булки']")  # локатор для кнопки булки в конструкторе бургеров
     button_fillers = (By.XPATH, ".//span[text() = 'Начинки']")  # локатор для кнопки начинки в конструкторе бургеров
     # локатор для подтверждения, что выбрана начинка
-    constructor_page_fillers_proof_element = (
-        By.XPATH,
-        './/p[@class="BurgerIngredient_ingredient__text__yp3dH" and text()="Говяжий метеорит (отбивная)"]')
+    constructor_page_fillers_proof_element = (By.XPATH,'.//span[text()="Начинки"]/parent::div')
 
     # локатор для подтверждения, что выбрана соусы
-    constructor_page_sauces_proof_element = (By.XPATH,
-                                             './/p[@class="BurgerIngredient_ingredient__text__yp3dH" and text()="Соус с шипами Антарианского плоскоходца"]')
+    constructor_page_sauces_proof_element = (By.XPATH,'.//span[text()="Соусы"]/parent::div')
 
     # локатор для подтверждения, что выбрана булки
-    constructor_page_buns_proof_element = (
-        By.XPATH,
-        './/p[@class="BurgerIngredient_ingredient__text__yp3dH" and text()="Краторная булка N-200i"]')
+    constructor_page_buns_proof_element = (By.XPATH, './/span[text()="Булки"]/parent::div')
