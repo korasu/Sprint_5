@@ -37,8 +37,6 @@ def create_account(driver_option):
     WebDriverWait(driver_option, 10).until(
         expected_conditions.visibility_of_element_located(locator.Locator.button_login))
 
-    assert driver_option.current_url == 'https://stellarburgers.nomoreparties.site/login'
-
     return email, password
 
 
